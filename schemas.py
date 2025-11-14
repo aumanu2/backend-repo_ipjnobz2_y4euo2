@@ -35,13 +35,30 @@ class Applicant(BaseModel):
     intake: Literal['Ganjil', 'Genap'] = Field(..., description="Periode penerimaan")
     notes: Optional[str] = Field(None, max_length=300, description="Catatan tambahan")
 
-# Example schemas left for reference (not used directly)
 class User(BaseModel):
-    name: str
-    email: str
-    address: str
-    age: Optional[int] = None
+    """
+    Akun pengguna (collection: "user")
+    role: 'applicant' | 'admin'
+    """
+    full_name: str = Field(..., min_length=3, max_length=120)
+    email: EmailStr
+    password: str = Field(..., min_length=6, max_length=128)
+    role: Literal['applicant', 'admin'] = 'applicant'
     is_active: bool = True
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = 'bearer'
+
+class MeResponse(BaseModel):
+    id: str
+    full_name: str
+    email: EmailStr
+    role: Literal['applicant', 'admin']
 
 class Product(BaseModel):
     title: str
